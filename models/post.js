@@ -1,25 +1,28 @@
 const Sequelize = require('sequelize')
 
 module.exports = function (sequelize){
-    return sequelize.define('user', {
+    return sequelize.define('post', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true,
             allowNull: false
         },
-        email: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
+        author: {
+            type: Sequelize.INTEGER,
+            allowNull: false
         },
-        name: {
+        title: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        password: {
-            type: Sequelize.STRING,
+        text: {
+            type: Sequelize.TEXT,
             allowNull: false
+        },
+        attachments: {
+            type: Sequelize.TEXT,
+            allowNull: true
         }
     }, {
         timestamps: false

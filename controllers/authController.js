@@ -5,7 +5,7 @@ const user = db.user
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 
-module.exports.registration = async (req, res) => {
+module.exports.createComment = async (req, res) => {
     try {
         const {email, password, name} = req.body
         const findedUser = await user.findOne({

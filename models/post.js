@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 
 module.exports = function (sequelize){
-    return sequelize.define('post', {
+    let post = sequelize.define('post', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -23,8 +23,14 @@ module.exports = function (sequelize){
         attachments: {
             type: Sequelize.TEXT,
             allowNull: true
+        },
+        time: {
+            type: Sequelize.TIME,
+            allowNull: false
         }
     }, {
         timestamps: false
     })
+
+    return post
 }

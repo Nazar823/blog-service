@@ -33,7 +33,8 @@ module.exports.findCommentsByPost = async (req, res) => {
                 post: post
             }
         })
-        if (findedComments === null){
+        console.log(findedComments[0])
+        if (findedComments[0] === undefined){
             return res.status(statusErr.code).json({message: 'This post haven\'t comments!'})
         }
         return res.status(statusOK.code).json(findedComments)

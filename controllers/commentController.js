@@ -1,6 +1,5 @@
-const db = require('../connection')
-const commentModel = db.comment
-const postModel = db.post
+const commentModel = require('../connectionComments').comment
+const postModel = require('../connectionPosts').post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 

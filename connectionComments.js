@@ -13,9 +13,3 @@ module.exports = {
     sequelize: sequelize,
     comment: comment
 }
-/*
-const post = require('./models/post')(sequelize)
-module.exports = {
-    sequelize: sequelize,
-    post: post
-}*/

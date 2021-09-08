@@ -1,37 +1,39 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../connection')
-const user = db.user
+const comment = db.comment
+const post = db.post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 
 module.exports.createComment = async (req, res) => {
     try {
-        const {email, password, name} = req.body
-        const findedUser = await user.findOne({
+        const {author, post, text} = req.body
+        const findedPost = await post.findOne({
             attributes: ['id'],
             where: {
-                email: email
+                id: post
             }
         })
-        if (findedUser !== null){
-            return res.status(statusErr.code).json({message: 'This email is already registered!'})
+        if (findedPost !== null){
+            return res.status(statusErr.code).json({message: 'This post not exist!'})
         }
-        user.create({
-            email: email,
-            name: name,
-            password: bcrypt.hashSync(password, 8)
+        comment.create({
+            author: author,
+            post: post,
+            text: text,
+            time: Date.now()
         })
-        return res.status(statusOK.code).json({message: 'Registration successfully'})
+        return res.status(statusOK.code).json({message: 'Comment posted!'})
     } catch (e) {
         return res.status(statusErr.code).json({message: e.message})
     }
 }
 
-module.exports.login = async (req, res) => {
+module.exports.createPost = async (req, res) => {
     try {
         const {email, password} = req.body
-        const findedUser = await user.findOne({
+        const findedUser = await post.findOne({
             attributes: ['id', 'password'],
             where: {
                 email: email
@@ -56,7 +58,7 @@ module.exports.checkToken = async (req, res) => {
         const secretKey = process.env.SECRET_KEY
         const token = req.headers.authorization
         const decodeId = jwt.verify(token, secretKey)
-        const findedUser = await user.findOne({
+        const findedUser = await post.findOne({
             attributes: ['id'],
             where: {
                 id: decodeId.id

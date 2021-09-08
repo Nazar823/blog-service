@@ -1,9 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const {body, validationResult} = require('express-validator')
-const {
+const statusOK = {code: 200, description: 'OK'}
+const statusErr = {code: 400, description: 'Bad Request'}
+/*const {
     registration, login, checkToken
-} =  require('./controllers/authController')
+} =  require('./controllers/postController')
 
 router.post('/api/login',
         body('email')
@@ -14,7 +16,7 @@ router.post('/api/login',
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
-            return res.status(400).json({errors: e.array()})
+            return res.status(statusErr.code).json({errors: e.array()})
         }
         return login(req, res)
     })
@@ -32,10 +34,10 @@ router.post('/api/registration',
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
-            return res.status(400).json({errors: e.array()})
+            return res.status(statusErr.code).json({errors: e.array()})
         }
         return registration(req, res)
     })
-router.post('/api/authorization', checkToken)
+router.post('/api/authorization', checkToken)*/
 
 module.exports = router

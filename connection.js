@@ -8,8 +8,13 @@ const sequelize = new Sequelize(
         host: process.env.HOST
     }
 )
-const user = require('./models/post')(sequelize)
+const comment = require('./models/comment')(sequelize)
 module.exports = {
     sequelize: sequelize,
-    user: user
+    comment: comment
+}
+const post = require('./models/post')(sequelize)
+module.exports = {
+    sequelize: sequelize,
+    post: post
 }

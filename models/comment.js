@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 
 module.exports = function (sequelize){
-    return sequelize.define('comment', {
+    let comments = sequelize.define('comment', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -20,11 +20,12 @@ module.exports = function (sequelize){
             type: Sequelize.STRING,
             allowNull: false
         },
-        time: {
-            type: Sequelize.TIME,
+        date_time: {
+            type: Sequelize.DATE,
             allowNull: false
         }
     }, {
         timestamps: false
     })
+    return comments
 }

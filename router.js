@@ -35,6 +35,8 @@ router.post('/api/findComments',
 router.post('/api/deleteComment',
     body('id', 'Id is not a numeric')
         .isNumeric(),
+    body('author', 'Author is not a numeric')
+        .isNumeric(),
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){

@@ -46,15 +46,18 @@ module.exports.findCommentsByPost = async (req, res) => {
 
 module.exports.deleteComment = async (req, res) => {
     try {
-        const {id} = req.body
+        const {id, author} = req.body
         const findedComment = await commentModel.findOne({
-            attributes: ['id'],
+            attributes: ['id', 'author'],
             where: {
-                id: id
+                id: id,
             }
         })
         if (findedComment === null){
             return res.status(statusErr.code).json({message: 'This comment not exists!'})
+        }
+        if (findedComment.author != author){
+            return res.status(statusErr.code).json({message: 'You haven\'t access to this comment!'})
         }
         findedComment.destroy()
         return res.status(statusOK.code).json({message: 'Comment deleted!'})

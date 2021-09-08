@@ -7,16 +7,9 @@ const statusErr = {code: 400, description: 'Bad Request'}
 module.exports.createComment = async (req, res) => {
     try {
         const {author, post, text} = req.body
-        // USING EXIST POST!!!!
-        /*const findedPost = await postModel.findOne({
-            attributes: ['id'],
-            where: {
-                id: post
-            }
-        })
-        if (findedPost === null){
-            return res.status(statusErr.code).json({message: 'This post not exist!'})
-        }*/
+        if (existPost(post)){
+            return res.status(statusErr.code).json({message: 'This post not exists!'})
+        }
         commentModel.create({
             author: author,
             post: post,
@@ -32,16 +25,9 @@ module.exports.createComment = async (req, res) => {
 module.exports.findCommentsByPost = async (req, res) => {
     try {
         const {post} = req.body
-        // USING EXIST POST!!!!
-        /*const findedPost = await postModel.findOne({
-            attributes: ['id'],
-            where: {
-                id: post
-            }
-        })
-        if (findedPost === null){
+        if (existPost(post)){
             return res.status(statusErr.code).json({message: 'This post not exist!'})
-        }*/
+        }
         const findedComments = await commentModel.findAll({
             attributes: ['id', 'author', 'text', 'date_time'],
             where: {

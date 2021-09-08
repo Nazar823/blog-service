@@ -3,22 +3,33 @@ const router = express.Router()
 const {body, validationResult} = require('express-validator')
 const statusErr = {code: 400, description: 'Bad Request'}
 const {
-    createComment
+    createComment, findCommentsByPost
 } = require('./controllers/commentController')
 
 router.post('/api/createComment',
-    body('author', 'Author is null')
-        .notEmpty(),
+    body('author', 'Author is not a numeric')
+        .isNumeric(),
     body('text', 'Text field is null!')
         .notEmpty(),
-    body('post', 'Post is null!')
-        .notEmpty(),
+    body('post', 'Post is not a numeric!')
+        .isNumeric(),
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
             return res.status(statusErr.code).json({errors: e.array()})
         }
         return createComment(req, res)
+    })
+
+router.post('/api/findComments',
+    body('post', 'Post is not a numeric')
+        .isNumeric(),
+    function (req, res) {
+        const e = validationResult(req)
+        if (!e.isEmpty()){
+            return res.status(statusErr.code).json({errors: e.array()})
+        }
+        return findCommentsByPost(req, res)
     })
 
 const {
@@ -41,8 +52,8 @@ router.post('/api/deletePost',
 router.post('/api/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
-    body('author', 'Author field null!')
-        .notEmpty(),
+    body('author', 'Author field not a numeric!')
+        .isNumeric(),
     body('text', 'Text field null!')
         .notEmpty(),
 
@@ -66,9 +77,8 @@ router.post('/api/findPost',
         return findPost(req, res)
     })
 
-
 router.post('/api/findAuthorPosts',
-    body('author', 'Post field not a numeric!')
+    body('author', 'Author field not a numeric!')
         .isNumeric(),
 
     function (req, res) {
@@ -78,6 +88,5 @@ router.post('/api/findAuthorPosts',
         }
         return findAuthorPosts(req, res)
     })
-
 
 module.exports = router

@@ -7,17 +7,16 @@ const statusErr = {code: 400, description: 'Bad Request'}
 module.exports.createComment = async (req, res) => {
     try {
         const {author, post, text} = req.body
-        const findedPost = await postModel.findOne({
-            attributes: ['id', 'text'],
+        // USING EXIST POST!!!!
+        /*const findedPost = await postModel.findOne({
+            attributes: ['id'],
             where: {
                 id: post
             }
         })
-        // console.log(findedPost)
         if (findedPost === null){
             return res.status(statusErr.code).json({message: 'This post not exist!'})
-        }
-        console.log('Ошибка в модели')
+        }*/
         commentModel.create({
             author: author,
             post: post,
@@ -30,23 +29,29 @@ module.exports.createComment = async (req, res) => {
     }
 }
 
-module.exports.createPost = async (req, res) => {
+module.exports.findCommentsByPost = async (req, res) => {
     try {
-        const {email, password} = req.body
-        const findedUser = await post.findOne({
-            attributes: ['id', 'password'],
+        const {post} = req.body
+        // USING EXIST POST!!!!
+        /*const findedPost = await postModel.findOne({
+            attributes: ['id'],
             where: {
-                email: email
+                id: post
             }
         })
-        if (findedUser === null){
-            return res.status(statusErr.code).json({message: 'User not found!'})
+        if (findedPost === null){
+            return res.status(statusErr.code).json({message: 'This post not exist!'})
+        }*/
+        const findedComments = await commentModel.findAll({
+            attributes: ['id', 'author', 'text', 'date_time'],
+            where: {
+                post: post
+            }
+        })
+        if (findedComments === null){
+            return res.status(statusErr.code).json({message: 'This post haven\'t comments!'})
         }
-        const validPass = bcrypt.compareSync(password, findedUser.password)
-        if (!validPass){
-            return res.status(statusErr.code).json({message: 'Wrong password!'})
-        }
-        return res.status(statusOK.code).json({token: getToken(findedUser.id)})
+        return res.status(statusOK.code).json(findedComments)
     } catch (e){
         console.log(e.message)
         return res.status(statusErr.code).json({message: e.message})
@@ -75,8 +80,12 @@ module.exports.checkToken = async (req, res) => {
     }
 }
 
-function getToken(id) {
-    return jwt.sign({id},
-        process.env.SECRET_KEY,
-        {expiresIn: '96h'})
+function existPost(id) {
+    const findedPost = postModel.findOne({
+            attributes: ['id'],
+            where: {
+                id: id
+            }
+        })
+        return findedPost === null
 }

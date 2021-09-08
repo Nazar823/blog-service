@@ -1,26 +1,27 @@
 const db = require('../connection')
-const comment = db.comment
-const post = db.post
+const commentModel = db.comment
+const postModel = db.post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 
 module.exports.createComment = async (req, res) => {
     try {
         const {author, post, text} = req.body
-        const findedPost = await post.findOne({
-            attributes: ['id'],
+        const findedPost = await postModel.findOne({
+            attributes: ['id', 'text'],
             where: {
                 id: post
             }
         })
-        if (findedPost !== null){
-            return res.status(statusErr.code).json({message: 'This post nit exist!'})
+        // console.log(findedPost)
+        if (findedPost === null){
+            return res.status(statusErr.code).json({message: 'This post not exist!'})
         }
-        comment.create({
+        commentModel.create({
             author: author,
             post: post,
             text: text,
-            time: Date.now()
+            date_time: Date.now()
         })
         return res.status(statusOK.code).json({message: 'Comment posted!'})
     } catch (e) {

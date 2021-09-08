@@ -1,36 +1,27 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../connection')
-const comment = db.comment
-const post = db.post
+const postModel = db.post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 
-module.exports.createComment = async (req, res) => {
+module.exports.createPost = async (req, res) => {
     try {
-        const {author, post, text} = req.body
-        const findedPost = await post.findOne({
-            attributes: ['id'],
-            where: {
-                id: post
-            }
-        })
-        if (findedPost !== null){
-            return res.status(statusErr.code).json({message: 'This post not exist!'})
-        }
-        comment.create({
+        const {author, title, text, attachments} = req.body
+        postModel.create({
             author: author,
-            post: post,
+            title: title,
             text: text,
-            time: Date.now()
+            attachments: attachments,
+            date_time: Date.now()
         })
-        return res.status(statusOK.code).json({message: 'Comment posted!'})
+        return res.status(statusOK.code).json({message: 'Posted!'})
     } catch (e) {
         return res.status(statusErr.code).json({message: e.message})
     }
 }
 
-module.exports.createPost = async (req, res) => {
+module.exports.createPost2 = async (req, res) => {
     try {
         const {email, password} = req.body
         const findedUser = await post.findOne({

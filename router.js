@@ -5,9 +5,6 @@ const statusErr = {code: 400, description: 'Bad Request'}
 const {
     createComment
 } = require('./controllers/commentController')
-const {
-    createPost
-} =  require('./controllers/postController')
 
 router.post('/api/createComment',
     body('author', 'Author is null')
@@ -24,15 +21,30 @@ router.post('/api/createComment',
         return createComment(req, res)
     })
 
-router.post('/api/createPost',/*
-    body('email', 'Email not valid')
-        .isEmail()
-        .normalizeEmail(),
-    body('password')
-        .isLength({min: 8})
-        .withMessage('Password must be at least 8 chars long'),
-    body('name', 'Name field null!')
-        .notEmpty(),*/
+const {
+    createPost, deletePost, findPost, findAuthorPosts
+} =  require('./controllers/postController')
+
+router.post('/api/deletePost',
+    body('post', 'Post field not a numeric!')
+        .isNumeric(),
+    body('author', 'Author field not a numeric!')
+        .isNumeric(),
+    function (req, res) {
+        const e = validationResult(req)
+        if (!e.isEmpty()){
+            return res.status(statusErr.code).json({errors: e.array()})
+        }
+        return deletePost(req, res)
+    })
+
+router.post('/api/createPost',
+    body('title', 'Title field null!')
+        .notEmpty(),
+    body('author', 'Author field null!')
+        .notEmpty(),
+    body('text', 'Text field null!')
+        .notEmpty(),
 
     function (req, res) {
         const e = validationResult(req)
@@ -41,6 +53,31 @@ router.post('/api/createPost',/*
         }
         return createPost(req, res)
     })
-// router.post('/api/authorization', checkToken)
+
+router.post('/api/findPost',
+    body('post', 'Post field not a numeric!')
+        .isNumeric(),
+
+    function (req, res) {
+        const e = validationResult(req)
+        if (!e.isEmpty()){
+            return res.status(statusErr.code).json({errors: e.array()})
+        }
+        return findPost(req, res)
+    })
+
+
+router.post('/api/findAuthorPosts',
+    body('author', 'Post field not a numeric!')
+        .isNumeric(),
+
+    function (req, res) {
+        const e = validationResult(req)
+        if (!e.isEmpty()){
+            return res.status(statusErr.code).json({errors: e.array()})
+        }
+        return findAuthorPosts(req, res)
+    })
+
 
 module.exports = router

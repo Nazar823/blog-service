@@ -17,6 +17,7 @@ module.exports.createComment = async (req, res) => {
         if (findedPost === null){
             return res.status(statusErr.code).json({message: 'This post not exist!'})
         }
+        console.log('Ошибка в модели')
         commentModel.create({
             author: author,
             post: post,

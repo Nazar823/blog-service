@@ -1,5 +1,3 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
 const db = require('../connection')
 const postModel = db.post
 const statusOK = {code: 200, description: 'OK'}
@@ -21,53 +19,61 @@ module.exports.createPost = async (req, res) => {
     }
 }
 
-module.exports.createPost2 = async (req, res) => {
+module.exports.deletePost = async (req, res) => {
     try {
-        const {email, password} = req.body
-        const findedUser = await post.findOne({
-            attributes: ['id', 'password'],
+        const {post, author} = req.body
+        const findedPost = await postModel.findOne({
+            attributes: ['id', 'author'],
             where: {
-                email: email
+                id: post
             }
         })
-        if (findedUser === null){
-            return res.status(statusErr.code).json({message: 'User not found!'})
+        if (findedPost === null){
+            return res.status(statusErr.code).json({message: 'Post not found!'})
         }
-        const validPass = bcrypt.compareSync(password, findedUser.password)
-        if (!validPass){
-            return res.status(statusErr.code).json({message: 'Wrong password!'})
+        if (findedPost.author != author){
+            return res.status(statusErr.code).json({message: 'You haven\'t access to this post!'})
         }
-        return res.status(statusOK.code).json({token: getToken(findedUser.id)})
+        findedPost.destroy()
+        return res.status(statusOK.code).json({message: 'Post deleted!'})
     } catch (e){
         console.log(e.message)
         return res.status(statusErr.code).json({message: e.message})
     }
 }
 
-module.exports.checkToken = async (req, res) => {
+module.exports.findPost = async (req, res) => {
     try {
-        const secretKey = process.env.SECRET_KEY
-        const token = req.headers.authorization
-        const decodeId = jwt.verify(token, secretKey)
-        const findedUser = await post.findOne({
-            attributes: ['id'],
+        const {post} = req.body
+        const findedPost = await postModel.findOne({
             where: {
-                id: decodeId.id
+                id: post
             }
         })
-        if (findedUser === null){
-            return res.status(statusErr.code).json({message: 'Authorization failed', id: null})
-        } else {
-            return res.status(statusOK.code).json({message: 'Authorization successfully!', id: decodeId.id})
+        if (findedPost === null){
+            return res.status(statusErr.code).json({message: 'Post not found!'})
         }
+        return res.status(statusOK.code).json(findedPost)
     } catch (e){
         console.log(e.message)
-        return res.json(e.message)
+        return res.status(statusErr.code).json({message: e.message})
     }
 }
 
-function getToken(id) {
-    return jwt.sign({id},
-        process.env.SECRET_KEY,
-        {expiresIn: '96h'})
+module.exports.findAuthorPosts = async (req, res) => {
+    try {
+        const {author} = req.body
+        const findedPost = await postModel.findAll({
+            where: {
+                author: author
+            }
+        })
+        if (findedPost === null){
+            return res.status(statusErr.code).json({message: 'This is author haven\'t posts!'})
+        }
+        return res.status(statusOK.code).json(findedPost)
+    } catch (e){
+        console.log(e.message)
+        return res.status(statusErr.code).json({message: e.message})
+    }
 }

@@ -58,25 +58,23 @@ module.exports.findCommentsByPost = async (req, res) => {
     }
 }
 
-module.exports.checkToken = async (req, res) => {
+module.exports.deleteComment = async (req, res) => {
     try {
-        const secretKey = process.env.SECRET_KEY
-        const token = req.headers.authorization
-        const decodeId = jwt.verify(token, secretKey)
-        const findedUser = await post.findOne({
+        const {id} = req.body
+        const findedComment = await commentModel.findOne({
             attributes: ['id'],
             where: {
-                id: decodeId.id
+                id: id
             }
         })
-        if (findedUser === null){
-            return res.status(statusErr.code).json({message: 'Authorization failed', id: null})
-        } else {
-            return res.status(statusOK.code).json({message: 'Authorization successfully!', id: decodeId.id})
+        if (findedComment === null){
+            return res.status(statusErr.code).json({message: 'This comment not exists!'})
         }
+        findedComment.destroy()
+        return res.status(statusOK.code).json({message: 'Comment deleted!'})
     } catch (e){
         console.log(e.message)
-        return res.json(e.message)
+        return res.status(statusErr.code).json({message: e.message})
     }
 }
 

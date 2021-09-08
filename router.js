@@ -3,7 +3,7 @@ const router = express.Router()
 const {body, validationResult} = require('express-validator')
 const statusErr = {code: 400, description: 'Bad Request'}
 const {
-    createComment, findCommentsByPost
+    createComment, findCommentsByPost, deleteComment
 } = require('./controllers/commentController')
 
 router.post('/api/createComment',
@@ -30,6 +30,17 @@ router.post('/api/findComments',
             return res.status(statusErr.code).json({errors: e.array()})
         }
         return findCommentsByPost(req, res)
+    })
+
+router.post('/api/deleteComment',
+    body('id', 'Id is not a numeric')
+        .isNumeric(),
+    function (req, res) {
+        const e = validationResult(req)
+        if (!e.isEmpty()){
+            return res.status(statusErr.code).json({errors: e.array()})
+        }
+        return deleteComment(req, res)
     })
 
 const {

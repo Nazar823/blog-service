@@ -1,4 +1,4 @@
-const postModel = require('../connectionPosts').post
+const postModel = require('../connection').post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 const axios = require('axios')

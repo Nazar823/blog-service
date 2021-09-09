@@ -1,6 +1,6 @@
 const axios = require('axios')
-const commentModel = require('../connectionComments').comment
-const postModel = require('../connectionPosts').post
+const commentModel = require('../connection').comment
+const postModel = require('../connection').post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
 

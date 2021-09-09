@@ -10,12 +10,10 @@ const sequelize = new Sequelize(
 )
 
 const post = require('./models/post')(sequelize)
-module.exports = {
-    sequelize: sequelize,
-    post: post
-}
 const comment = require('./models/comment')(sequelize)
+
 module.exports = {
     sequelize: sequelize,
+    post: post,
     comment: comment
 }

@@ -5,7 +5,8 @@ const axios = require('axios')
 
 module.exports.createPost = async (req, res) => {
     try {
-        const {token, title, text, attachments} = req.body
+        const {title, text, attachments} = req.body
+        const {token} = req.headers
         const author = Object(await checkToken(token)).id
         if (author == null) {
             return res.status(statusErr.code).json({message: "You are not authorizated!"})
@@ -25,7 +26,8 @@ module.exports.createPost = async (req, res) => {
 
 module.exports.deletePost = async (req, res) => {
     try {
-        const {post, token} = req.body
+        const {post} = req.body
+        const {token} = req.headers
         const findedPost = await postModel.findOne({
             attributes: ['id', 'author'],
             where: {

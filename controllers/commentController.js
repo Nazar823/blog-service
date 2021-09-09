@@ -6,7 +6,8 @@ const statusErr = {code: 400, description: 'Bad Request'}
 
 module.exports.createComment = async (req, res) => {
     try {
-        const {token, post, text} = req.body
+        const {post, text} = req.body
+        const {token} = req.headers
         if (await existPost(post)){
             return res.status(statusErr.code).json({message: 'This post not exists!'})
         }
@@ -50,7 +51,8 @@ module.exports.findCommentsByPost = async (req, res) => {
 
 module.exports.deleteComment = async (req, res) => {
     try {
-        const {id, token} = req.body
+        const {id} = req.body
+        const {token} = req.headers
         const author = Object(await checkToken(token)).id
         if (!author) {
             return res.status(statusErr.code).json({message: 'You are not authorizated!'})

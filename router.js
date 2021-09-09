@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const {body, validationResult, oneOf} = require('express-validator')
+const {header, body, validationResult, oneOf} = require('express-validator')
 const statusErr = {code: 400, description: 'Bad Request'}
 const {
     createComment, findCommentsByPost, deleteComment
 } = require('./controllers/commentController')
 
 router.post('/api/createComment',
-    body('token', 'Token is not a JWT')
+    header('token', 'Token is not a JWT')
         .isJWT(),
     body('text', 'Text field is null!')
         .notEmpty(),
@@ -35,7 +35,7 @@ router.post('/api/findComments',
 router.post('/api/deleteComment',
     body('id', 'Id is not a numeric')
         .isNumeric(),
-    body('token', 'Token is not a JWT')
+    header('token', 'Token is not a JWT')
         .isJWT(),
     function (req, res) {
         const e = validationResult(req)
@@ -52,7 +52,7 @@ const {
 router.post('/api/deletePost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
-    body('token', 'Token field not a JWT!')
+    header('token', 'Token field not a JWT!')
         .isJWT(),
     function (req, res) {
         const e = validationResult(req)
@@ -65,7 +65,7 @@ router.post('/api/deletePost',
 router.post('/api/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
-    body('token', 'Token field not is JWT!')
+    header('token', 'Token field not is JWT!')
         .isJWT(),
     body('text', 'Text field null!')
         .notEmpty(),

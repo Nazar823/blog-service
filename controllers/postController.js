@@ -1,15 +1,15 @@
 const postModel = require('../connectionPosts').post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
-const validator = require('validator')
-const axios = require('axios');
+const axios = require('axios')
 
 module.exports.createPost = async (req, res) => {
     try {
         const {token, title, text, attachments} = req.body
+        return res.status(statusErr.code).json({message: "Testing!"})
         const author = Object(await checkToken(token)).id
         if (author == null) {
-            return res.status(statusErr.code).json({message: "Invalid token!"})
+            return res.status(statusErr.code).json({message: "You are not authorizated!"})
         }
         postModel.create({
             author: author,

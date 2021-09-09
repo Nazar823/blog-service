@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require('axios')
 const commentModel = require('../connectionComments').comment
 const postModel = require('../connectionPosts').post
 const statusOK = {code: 200, description: 'OK'}
@@ -53,7 +53,7 @@ module.exports.deleteComment = async (req, res) => {
         const {id, token} = req.body
         const author = Object(await checkToken(token)).id
         if (!author) {
-            return res.status(statusErr.code).json({message: 'You not authorizated!'})
+            return res.status(statusErr.code).json({message: 'You are not authorizated!'})
         }
         const findedComment = await commentModel.findOne({
             attributes: ['id', 'author'],
@@ -76,7 +76,6 @@ module.exports.deleteComment = async (req, res) => {
 }
 
 async function existPost(id) {
-    console.log('id: ', id)
     const findedPost = await postModel.findOne({
         where: {
             id: id
@@ -86,7 +85,7 @@ async function existPost(id) {
 }
 async function checkToken(token) {
     try {
-        const response = await axios.post('http://localhost:5001/api/authorization', {}, {
+        const response = await axios.post(process.env.REGISTRATION, {}, {
                 headers: {authorization: token}
             }
         )

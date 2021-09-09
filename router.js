@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {body, validationResult} = require('express-validator')
+const {body, validationResult, oneOf} = require('express-validator')
 const statusErr = {code: 400, description: 'Bad Request'}
 const {
     createComment, findCommentsByPost, deleteComment
@@ -69,7 +69,11 @@ router.post('/api/createPost',
         .isJWT(),
     body('text', 'Text field null!')
         .notEmpty(),
-
+    oneOf([
+        body('attachments', 'Attachments must be null or link')
+            .isURL(),
+        body('attachments', 'Attachments must be null or link')
+            .isEmpty()]),
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
@@ -81,7 +85,6 @@ router.post('/api/createPost',
 router.post('/api/findPost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
-
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
@@ -93,7 +96,6 @@ router.post('/api/findPost',
 router.post('/api/findAuthorPosts',
     body('author', 'Author field not a numeric!')
         .isNumeric(),
-
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
@@ -101,5 +103,4 @@ router.post('/api/findAuthorPosts',
         }
         return findAuthorPosts(req, res)
     })
-
 module.exports = router

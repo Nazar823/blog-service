@@ -11,3 +11,6 @@
 * DB_PASSWORD = your_db_password
 * DIALECT = postgres //or other
 * HOST = your_host
+
+Подключение других сервисов
+* REGISTRATION = Link to registration service

@@ -94,5 +94,4 @@ async function checkToken(token) {
     } catch (e) {
         return e
     }
-
 }

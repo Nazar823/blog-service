@@ -7,8 +7,8 @@ const {
 } = require('./controllers/commentController')
 
 router.post('/api/createComment',
-    body('author', 'Author is not a numeric')
-        .isNumeric(),
+    body('token', 'Token is not a JWT')
+        .isJWT(),
     body('text', 'Text field is null!')
         .notEmpty(),
     body('post', 'Post is not a numeric!')
@@ -35,8 +35,8 @@ router.post('/api/findComments',
 router.post('/api/deleteComment',
     body('id', 'Id is not a numeric')
         .isNumeric(),
-    body('author', 'Author is not a numeric')
-        .isNumeric(),
+    body('token', 'Token is not a JWT')
+        .isJWT(),
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
@@ -52,8 +52,8 @@ const {
 router.post('/api/deletePost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
-    body('author', 'Author field not a numeric!')
-        .isNumeric(),
+    body('token', 'Token field not a JWT!')
+        .isJWT(),
     function (req, res) {
         const e = validationResult(req)
         if (!e.isEmpty()){
@@ -65,8 +65,8 @@ router.post('/api/deletePost',
 router.post('/api/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
-    body('token', 'Author field not is empty!')
-        /*.isEmpty()*/,
+    body('token', 'Token field not is JWT!')
+        .isJWT(),
     body('text', 'Text field null!')
         .notEmpty(),
 

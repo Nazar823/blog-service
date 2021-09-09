@@ -1,3 +1,4 @@
+const axios = require("axios");
 const commentModel = require('../connectionComments').comment
 const postModel = require('../connectionPosts').post
 const statusOK = {code: 200, description: 'OK'}
@@ -5,9 +6,13 @@ const statusErr = {code: 400, description: 'Bad Request'}
 
 module.exports.createComment = async (req, res) => {
     try {
-        const {author, post, text} = req.body
-        if (existPost(post)){
+        const {token, post, text} = req.body
+        if (await existPost(post)){
             return res.status(statusErr.code).json({message: 'This post not exists!'})
+        }
+        const author = Object(await checkToken(token)).id
+        if (!author) {
+            return res.status(statusErr.code).json({message: 'You not authorizated!'})
         }
         commentModel.create({
             author: author,
@@ -24,7 +29,7 @@ module.exports.createComment = async (req, res) => {
 module.exports.findCommentsByPost = async (req, res) => {
     try {
         const {post} = req.body
-        if (existPost(post)){
+        if (await existPost(post)){
             return res.status(statusErr.code).json({message: 'This post not exist!'})
         }
         const findedComments = await commentModel.findAll({
@@ -33,7 +38,6 @@ module.exports.findCommentsByPost = async (req, res) => {
                 post: post
             }
         })
-        console.log(findedComments[0])
         if (findedComments[0] === undefined){
             return res.status(statusErr.code).json({message: 'This post haven\'t comments!'})
         }
@@ -46,7 +50,11 @@ module.exports.findCommentsByPost = async (req, res) => {
 
 module.exports.deleteComment = async (req, res) => {
     try {
-        const {id, author} = req.body
+        const {id, token} = req.body
+        const author = Object(await checkToken(token)).id
+        if (!author) {
+            return res.status(statusErr.code).json({message: 'You not authorizated!'})
+        }
         const findedComment = await commentModel.findOne({
             attributes: ['id', 'author'],
             where: {
@@ -67,12 +75,23 @@ module.exports.deleteComment = async (req, res) => {
     }
 }
 
-function existPost(id) {
-    const findedPost = postModel.findOne({
-            attributes: ['id'],
-            where: {
-                id: id
+async function existPost(id) {
+    console.log('id: ', id)
+    const findedPost = await postModel.findOne({
+        where: {
+            id: id
+        }
+    })
+    return findedPost === null
+}
+async function checkToken(token) {
+    try {
+        const response = await axios.post('http://localhost:5001/api/authorization', {}, {
+                headers: {authorization: token}
             }
-        })
-        return findedPost === null
+        )
+        return response.data
+    } catch (e) {
+        return e
+    }
 }

@@ -6,7 +6,6 @@ const axios = require('axios')
 module.exports.createPost = async (req, res) => {
     try {
         const {token, title, text, attachments} = req.body
-        return res.status(statusErr.code).json({message: "Testing!"})
         const author = Object(await checkToken(token)).id
         if (author == null) {
             return res.status(statusErr.code).json({message: "You are not authorizated!"})

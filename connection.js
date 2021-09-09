@@ -14,3 +14,8 @@ module.exports = {
     sequelize: sequelize,
     post: post
 }
+const comment = require('./models/comment')(sequelize)
+module.exports = {
+    sequelize: sequelize,
+    comment: comment
+}

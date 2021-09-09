@@ -65,8 +65,8 @@ router.post('/api/deletePost',
 router.post('/api/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
-    body('author', 'Author field not a numeric!')
-        .isNumeric(),
+    body('token', 'Author field not is empty!')
+        /*.isEmpty()*/,
     body('text', 'Text field null!')
         .notEmpty(),
 

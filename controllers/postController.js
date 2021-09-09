@@ -1,10 +1,16 @@
 const postModel = require('../connectionPosts').post
 const statusOK = {code: 200, description: 'OK'}
 const statusErr = {code: 400, description: 'Bad Request'}
+const validator = require('validator')
+const axios = require('axios');
 
 module.exports.createPost = async (req, res) => {
     try {
-        const {author, title, text, attachments} = req.body
+        const {token, title, text, attachments} = req.body
+        const author = Object(await checkToken(token)).id
+        if (author == null) {
+            return res.status(statusErr.code).json({message: "Invalid token!"})
+        }
         postModel.create({
             author: author,
             title: title,
@@ -20,7 +26,7 @@ module.exports.createPost = async (req, res) => {
 
 module.exports.deletePost = async (req, res) => {
     try {
-        const {post, author} = req.body
+        const {post, token} = req.body
         const findedPost = await postModel.findOne({
             attributes: ['id', 'author'],
             where: {
@@ -30,6 +36,7 @@ module.exports.deletePost = async (req, res) => {
         if (findedPost === null){
             return res.status(statusErr.code).json({message: 'Post not found!'})
         }
+        const author = Object(await checkToken(token)).id
         if (findedPost.author != author){
             return res.status(statusErr.code).json({message: 'You haven\'t access to this post!'})
         }
@@ -75,4 +82,17 @@ module.exports.findAuthorPosts = async (req, res) => {
         console.log(e.message)
         return res.status(statusErr.code).json({message: e.message})
     }
+}
+
+async function checkToken(token) {
+    try {
+        const response = await axios.post('http://localhost:5001/api/authorization', {}, {
+            headers: {authorization: token}
+            }
+        )
+        return response.data
+    } catch (e) {
+        return e
+    }
+
 }

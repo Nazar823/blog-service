@@ -13,38 +13,26 @@ router.post('/api/createComment',
         .notEmpty(),
     body('post', 'Post is not a numeric!')
         .isNumeric(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return createComment(req, res)
     })
-
 router.post('/api/findComments',
     body('post', 'Post is not a numeric')
         .isNumeric(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return findCommentsByPost(req, res)
     })
-
 router.post('/api/deleteComment',
     body('id', 'Id is not a numeric')
         .isNumeric(),
     header('token', 'Token is not a JWT')
         .isJWT(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return deleteComment(req, res)
     })
-
 const {
     createPost, deletePost, findPost, findAuthorPosts
 } =  require('./controllers/postController')
@@ -54,14 +42,10 @@ router.post('/api/deletePost',
         .isNumeric(),
     header('token', 'Token field not a JWT!')
         .isJWT(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return deletePost(req, res)
     })
-
 router.post('/api/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
@@ -74,33 +58,30 @@ router.post('/api/createPost',
             .isURL(),
         body('attachments', 'Attachments must be null or link')
             .isEmpty()]),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return createPost(req, res)
     })
-
 router.post('/api/findPost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return findPost(req, res)
     })
-
 router.post('/api/findAuthorPosts',
     body('author', 'Author field not a numeric!')
         .isNumeric(),
+    middleCheckErrors,
     function (req, res) {
-        const e = validationResult(req)
-        if (!e.isEmpty()){
-            return res.status(statusErr.code).json({errors: e.array()})
-        }
         return findAuthorPosts(req, res)
     })
+
+function middleCheckErrors(req, res, next){
+    const errors = validationResult(req)
+    if (!errors.isEmpty()){
+        return res.status(statusErr.code).json({errors: errors.array()})
+    }
+    next()
+}
 module.exports = router

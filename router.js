@@ -6,7 +6,7 @@ const {
     createComment, findCommentsByPost, deleteComment
 } = require('./controllers/commentController')
 
-router.post('/api/createComment',
+router.post('/api/blog/createComment',
     header('token', 'Token is not a JWT')
         .isJWT(),
     body('text', 'Text field is null!')
@@ -17,14 +17,14 @@ router.post('/api/createComment',
     function (req, res) {
         return createComment(req, res)
     })
-router.post('/api/findComments',
+router.post('/api/blog/findComments',
     body('post', 'Post is not a numeric')
         .isNumeric(),
     middleCheckErrors,
     function (req, res) {
         return findCommentsByPost(req, res)
     })
-router.post('/api/deleteComment',
+router.post('/api/blog/deleteComment',
     body('id', 'Id is not a numeric')
         .isNumeric(),
     header('token', 'Token is not a JWT')
@@ -37,7 +37,7 @@ const {
     createPost, deletePost, findPost, findAuthorPosts
 } =  require('./controllers/postController')
 
-router.post('/api/deletePost',
+router.post('/api/blog/deletePost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
     header('token', 'Token field not a JWT!')
@@ -46,7 +46,7 @@ router.post('/api/deletePost',
     function (req, res) {
         return deletePost(req, res)
     })
-router.post('/api/createPost',
+router.post('/api/blog/createPost',
     body('title', 'Title field null!')
         .notEmpty(),
     header('token', 'Token field not is JWT!')
@@ -62,14 +62,14 @@ router.post('/api/createPost',
     function (req, res) {
         return createPost(req, res)
     })
-router.post('/api/findPost',
+router.post('/api/blog/findPost',
     body('post', 'Post field not a numeric!')
         .isNumeric(),
     middleCheckErrors,
     function (req, res) {
         return findPost(req, res)
     })
-router.post('/api/findAuthorPosts',
+router.post('/api/blog/findAuthorPosts',
     body('author', 'Author field not a numeric!')
         .isNumeric(),
     middleCheckErrors,

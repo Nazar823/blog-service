@@ -87,7 +87,7 @@ async function existPost(id) {
 }
 async function checkToken(token) {
     try {
-        const response = await axios.post(process.env.REGISTRATION, {}, {
+        const response = await axios.post(process.env.REGISTRATION_SERVICE + process.env.AUTHORIZATION, {}, {
                 headers: {authorization: token}
             }
         )

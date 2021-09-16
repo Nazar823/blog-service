@@ -5,6 +5,7 @@ const axios = require('axios')
 
 module.exports.createPost = async (req, res) => {
     try {
+
         const {title, text, attachments} = req.body
         const {token} = req.headers
         const author = Object(await checkToken(token)).id
@@ -87,10 +88,11 @@ module.exports.findAuthorPosts = async (req, res) => {
 
 async function checkToken(token) {
     try {
-        const response = await axios.post('http://localhost:5001/api/authorization', {}, {
+        const response = await axios.post(process.env.REGISTRATION_SERVICE + process.env.AUTHORIZATION , {}, {
             headers: {authorization: token}
             }
         )
+        console.log('response', response)
         return response.data
     } catch (e) {
         return e
